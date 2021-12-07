@@ -26,4 +26,10 @@ defmodule Day1Test do
     expected_result = 0
     assert Day1.sweep(data_set, 0) == expected_result
   end
+
+  # normalize_data()
+  test "returns number of normalized measurement increases" do
+    data_set = [199, 200, 208, 210, 200, 207, 240, 269, 260, 263]
+    assert Day1.normalize_data(data_set, 0) == 5
+  end
 end

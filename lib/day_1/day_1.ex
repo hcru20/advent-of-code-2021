@@ -9,7 +9,8 @@ defmodule Day1 do
   """
   def run(filepath) do
     data = get_data(filepath)
-    sweep(data, 0)
+    IO.puts("Increases: #{sweep(data, 0)}")
+    IO.puts("Normalized increases: #{normalize_data(data, 0)}")
   end
 
   @doc """
@@ -46,8 +47,28 @@ defmodule Day1 do
         increases
       Enum.at(list, 0) < Enum.at(list, 1) ->
         sweep(Enum.slice(list, 1..length(list) - 1), (increases + 1))
-      Enum.at(list, 0) > Enum.at(list, 1) ->
+      Enum.at(list, 0) >= Enum.at(list, 1) ->
         sweep(Enum.slice(list, 1..length(list) - 1), increases)
     end
+  end
+
+  @doc """
+  Normalizes depth increase data by measuring increases between
+  three-measurement windows
+
+  Returns the number of normalized increases
+  """
+  def normalize_data(data, increases) do
+    depth_1 = Enum.reduce(Enum.slice(data, 0..2), 0, fn(x, acc) -> x + acc end)
+    depth_2 = Enum.reduce(Enum.slice(data, 1..3), 0, fn(x, acc) -> x + acc end)
+    cond do
+      # All three-measurement windows have been evaluated when length(list) == 2
+      length(data) === 2 ->
+        increases
+      depth_1 < depth_2 ->
+        normalize_data(Enum.slice(data, 1..length(data) - 1), increases + 1)
+      (depth_1 >= depth_2) ->
+        normalize_data(Enum.slice(data, 1..length(data) - 1), increases)
+      end
   end
 end
