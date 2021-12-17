@@ -33,6 +33,11 @@ defmodule Day2 do
     output = analyze(data, 0, 0)
     IO.puts("Change in horizontal position: #{output.forward}")
     IO.puts("Change in vertical position: #{output.depth}")
+
+    IO.puts("------------ Calculations with aim ------------")
+    output = analyze_aim(data, 0, 0, 0)
+    IO.puts("Change in horizontal position: #{output.forward}")
+    IO.puts("Change in vertical position: #{output.depth}")
   end
 
   @doc """
@@ -49,7 +54,7 @@ defmodule Day2 do
   end
 
   def parse_data(list) do
-    Enum.reduce(list, [], fn(x, acc) -> [Day2.parse_datum(x) | acc] end)
+    Enum.reverse(Enum.reduce(list, [], fn(x, acc) -> [Day2.parse_datum(x) | acc] end))
   end
 
   def parse_datum(bitstring) do
@@ -84,6 +89,21 @@ defmodule Day2 do
         analyze(Enum.slice(list, 1..length(list) - 1), depth + current.magnitude, forward)
       current.direction === "u" ->
         analyze(Enum.slice(list, 1..length(list) - 1), depth - current.magnitude, forward)
+    end
+  end
+
+  def analyze_aim(list, depth, forward, aim) do
+    current = Enum.at(list, 0)
+
+    cond do
+      !current ->
+        %{ :depth => depth, :forward => forward }
+      current.direction === "d" ->
+        analyze_aim(Enum.slice(list, 1..length(list) - 1), depth, forward, aim + current.magnitude)
+      current.direction === "u" ->
+        analyze_aim(Enum.slice(list, 1..length(list) - 1), depth, forward, aim - current.magnitude)
+      current.direction === "f" ->
+        analyze_aim(Enum.slice(list, 1..length(list) - 1), depth + aim * current.magnitude, forward + current.magnitude, aim)
     end
   end
 end
