@@ -2,7 +2,6 @@ defmodule Day1Test do
   use ExUnit.Case
   doctest Day1
 
-
    # bins_to_ints()
    test "converts set of bitstrings to ints" do
     assert Day1.bins_to_ints(["0", "1", "2", "3"], []) == [0, 1, 2, 3]
